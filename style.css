@@ -88,10 +88,55 @@ button {
 /* Top links bar */
 .top-links {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   gap: 14px;
   margin-bottom: 18px;
+}
+
+.top-links > a:only-child {
+  margin-left: auto;
+}
+
+.lang-switch-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 3px 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 14px;
+  transition: all .15s ease;
+}
+
+.lang-btn:hover {
+  color: var(--forest-deep);
+}
+
+.lang-btn.active {
+  color: var(--white);
+  background: var(--forest);
+  box-shadow: 0 2px 6px rgba(31, 61, 46, 0.25);
+}
+
+.lang-separator {
+  color: var(--line);
+  font-size: 11px;
 }
 
 .dashboard-link {

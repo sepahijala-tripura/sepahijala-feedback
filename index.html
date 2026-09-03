@@ -15,8 +15,14 @@
 <body>
 <div class="page">
 
+  <!-- Top Language Switcher & Admin Link -->
   <div class="top-links">
-    <a class="dashboard-link" href="login.html">Dashboard login ↗</a>
+    <div class="lang-switch-container" role="group" aria-label="Language Selector">
+      <button type="button" class="lang-btn active" id="btnLangEn" onclick="setLanguage('en')">English</button>
+      <span class="lang-separator">|</span>
+      <button type="button" class="lang-btn" id="btnLangBn" onclick="setLanguage('bn')">বাংলা</button>
+    </div>
+    <a class="dashboard-link" href="login.html" data-i18n="dashboard_link">Dashboard login ↗</a>
   </div>
 
   <div class="portal">
@@ -34,14 +40,14 @@
         <a href="index.html" class="seal" title="District Administration Sepahijala, Bishramganj">
           <img src="logo.jpg" alt="District Administration Sepahijala" />
         </a>
-        <p class="eyebrow-office">Office of the District Magistrate &amp; Collector</p>
-        <p class="eyebrow-district">Sepahijala District, Tripura</p>
-        <h1>Citizen Feedback Portal</h1>
-        <p class="lede">Help us serve you better. Share your experience with the district administration, sub-division offices, and development blocks.</p>
+        <p class="eyebrow-office" data-i18n="office_title">Office of the District Magistrate &amp; Collector</p>
+        <p class="eyebrow-district" data-i18n="district_title">Sepahijala District, Tripura</p>
+        <h1 data-i18n="portal_title">Citizen Feedback Portal</h1>
+        <p class="lede" data-i18n="hero_lede">Help us serve you better. Share your experience with the district administration, sub-division offices, and development blocks.</p>
       </div>
       <div class="hero-foot">
-        <strong>Government of Tripura</strong>
-        Designed by National Informatics Centre (NIC), Sepahijala
+        <strong data-i18n="gov_tripura">Government of Tripura</strong>
+        <span data-i18n="nic_credit">Designed by National Informatics Centre (NIC), Sepahijala</span>
       </div>
     </div>
 
@@ -54,34 +60,34 @@
         
         <!-- Fieldset 1: Level Tile -->
         <fieldset>
-          <legend>1. Select Office Level <span class="hint">দপ্তরের স্তর নির্বাচন করুন</span></legend>
+          <legend><span data-i18n="step1_title">1. Select Office Level</span> <span class="hint" data-i18n="step1_hint"></span></legend>
           <div class="tile-row">
             <div class="tile" id="tile-DM" onclick="selectOfficeType('DM')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/>
               </svg>
-              <span>DM Office</span>
+              <span data-i18n="tile_dm">DM Office</span>
             </div>
             <div class="tile" id="tile-SDM" onclick="selectOfficeType('SDM')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 <polyline points="9 22 9 12 15 12 15 22"/>
               </svg>
-              <span>SDM Office</span>
+              <span data-i18n="tile_sdm">SDM Office</span>
             </div>
             <div class="tile" id="tile-BDO" onclick="selectOfficeType('BDO')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
               </svg>
-              <span>BDO Office</span>
+              <span data-i18n="tile_bdo">BDO Office</span>
             </div>
           </div>
         </fieldset>
 
         <!-- Fieldset 2: Specific Office Chips -->
         <fieldset id="specificOfficeSection" style="display: none;">
-          <legend>2. Specific Office <span class="hint">নির্দিষ্ট দপ্তর বেছে নিন</span></legend>
+          <legend><span data-i18n="step2_title">2. Specific Office</span> <span class="hint" data-i18n="step2_hint"></span></legend>
           <div class="chip-row" id="officeChipsContainer">
             <!-- Dynamically populated chips -->
           </div>
@@ -89,43 +95,43 @@
 
         <!-- Fieldset 3: Experience Rating -->
         <fieldset>
-          <legend>3. Your Experience Rating <span class="hint">আপনার অভিজ্ঞতা রেটিং</span></legend>
+          <legend><span data-i18n="step3_title">3. Your Experience Rating</span> <span class="hint" data-i18n="step3_hint"></span></legend>
           <div class="scale">
             <button type="button" id="rate-1" onclick="setRating(1)">
               <span class="n">1</span>
-              <span class="lbl">Poor / খারাপ</span>
+              <span class="lbl" data-i18n="rate_1">Poor</span>
             </button>
             <button type="button" id="rate-2" onclick="setRating(2)">
               <span class="n">2</span>
-              <span class="lbl">Fair / মোটামুটি</span>
+              <span class="lbl" data-i18n="rate_2">Fair</span>
             </button>
             <button type="button" id="rate-3" onclick="setRating(3)">
               <span class="n">3</span>
-              <span class="lbl">Good / ভালো</span>
+              <span class="lbl" data-i18n="rate_3">Good</span>
             </button>
             <button type="button" id="rate-4" onclick="setRating(4)">
               <span class="n">4</span>
-              <span class="lbl">Very Good / খুব ভালো</span>
+              <span class="lbl" data-i18n="rate_4">Very Good</span>
             </button>
             <button type="button" id="rate-5" onclick="setRating(5)">
               <span class="n">5</span>
-              <span class="lbl">Excellent / চমৎকার</span>
+              <span class="lbl" data-i18n="rate_5">Excellent</span>
             </button>
           </div>
         </fieldset>
 
         <!-- Fieldset 4: Remarks / Suggestions -->
         <fieldset>
-          <legend>4. Feedback / Suggestions <span class="hint">মতামত ও পরামর্শ (ঐচ্ছিক)</span></legend>
-          <textarea id="feedbackText" placeholder="Share your experience, grievance, or suggestions for improvement..."></textarea>
+          <legend><span data-i18n="step4_title">4. Feedback / Suggestions</span> <span class="hint" data-i18n="step4_hint">Optional</span></legend>
+          <textarea id="feedbackText" data-i18n-placeholder="feedback_placeholder" placeholder="Share your experience, grievance, or suggestions for improvement..."></textarea>
         </fieldset>
 
         <!-- Fieldset 5: Contact Details -->
         <fieldset>
-          <legend>5. Contact Details (Optional) <span class="hint">যোগাযোগের বিবরণ</span></legend>
+          <legend><span data-i18n="step5_title">5. Contact Details</span> <span class="hint" data-i18n="step5_hint">Optional</span></legend>
           <div class="contact-row">
-            <input type="tel" id="mobile" maxlength="10" placeholder="10-digit mobile number" />
-            <input type="email" id="email" placeholder="Email address (optional)" />
+            <input type="tel" id="mobile" maxlength="10" data-i18n-placeholder="mobile_placeholder" placeholder="10-digit mobile number" />
+            <input type="email" id="email" data-i18n-placeholder="email_placeholder" placeholder="Email address (optional)" />
           </div>
         </fieldset>
 
@@ -134,8 +140,8 @@
 
         <!-- Submit Row -->
         <div class="submit-row">
-          <button type="button" id="submitBtn" onclick="submitFeedback()" class="submit-btn">Submit Feedback</button>
-          <div class="error-note" id="inlineError">Please select an office and star rating before submitting.</div>
+          <button type="button" id="submitBtn" onclick="submitFeedback()" class="submit-btn" data-i18n="submit_btn">Submit Feedback</button>
+          <div class="error-note" id="inlineError" data-i18n="inline_error">Please select an office and star rating before submitting.</div>
         </div>
 
       </div>
@@ -143,24 +149,146 @@
       <!-- Confirmation Screen -->
       <div class="confirm" id="confirmSection">
         <div class="check">✓</div>
-        <h2>Feedback Recorded! / ধন্যবাদ</h2>
+        <h2 data-i18n="confirm_title">Feedback Recorded! Thank You</h2>
         <div class="ticket-id" id="ticketIdDisplay">Ref: SPJ-FB-2026-0001</div>
-        <p>Your feedback has been securely submitted to the District Administration, Sepahijala. Thank you for contributing to better public service delivery.</p>
-        <button type="button" class="again-btn" onclick="resetForm()">Submit Another Response</button>
+        <p data-i18n="confirm_msg">Your feedback has been securely submitted to the District Administration, Sepahijala. Thank you for contributing to better public service delivery.</p>
+        <button type="button" class="again-btn" onclick="resetForm()" data-i18n="again_btn">Submit Another Response</button>
       </div>
 
     </div>
   </div>
 
   <footer class="page-foot">
-    <div>Office of the District Magistrate &amp; Collector, Sepahijala District, Tripura</div>
-    <div class="updated">Designed &amp; Developed by <strong>NIC Sepahijala District Centre</strong></div>
+    <div data-i18n="footer_office">Office of the District Magistrate &amp; Collector, Sepahijala District, Tripura</div>
+    <div class="updated" data-i18n-html="footer_credit">Designed &amp; Developed by <strong>NIC Sepahijala District Centre</strong></div>
   </footer>
 
 </div>
 
 <script src="app.js"></script>
 <script>
+  // ── Pure English & Pure Bengali Translation Dictionary ───────
+  const TRANSLATIONS = {
+    en: {
+      dashboard_link: "Dashboard login ↗",
+      office_title: "Office of the District Magistrate & Collector",
+      district_title: "Sepahijala District, Tripura",
+      portal_title: "Citizen Feedback Portal",
+      hero_lede: "Help us serve you better. Share your experience with the district administration, sub-division offices, and development blocks.",
+      gov_tripura: "Government of Tripura",
+      nic_credit: "Designed by National Informatics Centre (NIC), Sepahijala",
+
+      step1_title: "1. Select Office Level",
+      step1_hint: "",
+      tile_dm: "DM Office",
+      tile_sdm: "SDM Office",
+      tile_bdo: "BDO Office",
+
+      step2_title: "2. Specific Office",
+      step2_hint: "",
+
+      step3_title: "3. Your Experience Rating",
+      step3_hint: "",
+      rate_1: "Poor",
+      rate_2: "Fair",
+      rate_3: "Good",
+      rate_4: "Very Good",
+      rate_5: "Excellent",
+
+      step4_title: "4. Feedback / Suggestions",
+      step4_hint: "Optional",
+      feedback_placeholder: "Share your experience, grievance, or suggestions for improvement...",
+
+      step5_title: "5. Contact Details",
+      step5_hint: "Optional",
+      mobile_placeholder: "10-digit mobile number",
+      email_placeholder: "Email address (optional)",
+
+      submit_btn: "Submit Feedback",
+      submitting_btn: "Submitting...",
+      inline_error: "Please select an office and star rating before submitting.",
+
+      confirm_title: "Feedback Recorded! Thank You",
+      confirm_msg: "Your feedback has been securely submitted to the District Administration, Sepahijala. Thank you for contributing to better public service delivery.",
+      again_btn: "Submit Another Response",
+
+      footer_office: "Office of the District Magistrate & Collector, Sepahijala District, Tripura",
+      footer_credit: "Designed & Developed by <strong>NIC Sepahijala District Centre</strong>",
+
+      err_select_office: "Please select the office level and specific office.",
+      err_select_rating: "Please select your experience rating from 1 to 5.",
+      err_invalid_mobile: "Please enter a valid 10-digit Indian mobile number.",
+      err_invalid_email: "Please enter a valid email address.",
+      err_submit_failed: "Failed to submit feedback. Please check connection and try again."
+    },
+    bn: {
+      dashboard_link: "ড্যাশবোর্ড লগইন ↗",
+      office_title: "জেলা শাসক ও সমাহর্তার কার্যালয়",
+      district_title: "সিপাহীজলা জেলা, ত্রিপুরা",
+      portal_title: "নাগরিক প্রতিক্রিয়া পোর্টাল",
+      hero_lede: "আপনাদের উন্নত পরিষেবা প্রদানে আমাদের সহায়তা করুন। জেলা প্রশাসন, মহকুমা শাসক এবং ব্লক উন্নয়ন আধিকারিকের কার্যালয়ে আপনার অভিজ্ঞতা ভাগ করে নিন।",
+      gov_tripura: "ত্রিপুরা সরকার",
+      nic_credit: "পরিকল্পনা ও রূপায়ণে: জাতীয় তথ্যবিজ্ঞান কেন্দ্র (NIC), সিপাহীজলা",
+
+      step1_title: "১. দপ্তরের স্তর নির্বাচন করুন",
+      step1_hint: "",
+      tile_dm: "ডিএম কার্যালয়",
+      tile_sdm: "এসডিএম কার্যালয়",
+      tile_bdo: "বিডিও কার্যালয়",
+
+      step2_title: "২. নির্দিষ্ট দপ্তর বেছে নিন",
+      step2_hint: "",
+
+      step3_title: "৩. আপনার অভিজ্ঞতা রেটিং",
+      step3_hint: "",
+      rate_1: "খারাপ",
+      rate_2: "মোটামুটি",
+      rate_3: "ভালো",
+      rate_4: "খুব ভালো",
+      rate_5: "চমৎকার",
+
+      step4_title: "৪. মতামত ও পরামর্শ",
+      step4_hint: "ঐচ্ছিক",
+      feedback_placeholder: "আপনার অভিজ্ঞতা, অভিযোগ বা উন্নতির জন্য পরামর্শ লিখুন...",
+
+      step5_title: "৫. যোগাযোগের বিবরণ",
+      step5_hint: "ঐচ্ছিক",
+      mobile_placeholder: "১০ সংখ্যার মোবাইল নম্বর",
+      email_placeholder: "ইমেইল ঠিকানা (ঐচ্ছিক)",
+
+      submit_btn: "মতামত জমা দিন",
+      submitting_btn: "জমা দেওয়া হচ্ছে...",
+      inline_error: "অনুগ্রহ করে জমা দেওয়ার আগে দপ্তর এবং রেটিং নির্বাচন করুন।",
+
+      confirm_title: "প্রতিক্রিয়া নথিভুক্ত হয়েছে! ধন্যবাদ",
+      confirm_msg: "আপনার প্রতিক্রিয়া নিরাপদে সিপাহীজলা জেলা প্রশাসনে জমা হয়েছে। উন্নত জনসেবা প্রদানে সহযোগিতার জন্য ধন্যবাদ।",
+      again_btn: "আরেকটি প্রতিক্রিয়া জমা দিন",
+
+      footer_office: "জেলা শাসক ও সমাহর্তার কার্যালয়, সিপাহীজলা জেলা, ত্রিপুরা",
+      footer_credit: "পরিকল্পনা ও রূপায়ণে: <strong>জাতীয় তথ্যবিজ্ঞান কেন্দ্র (NIC), সিপাহীজলা জেলা কেন্দ্র</strong>",
+
+      err_select_office: "অনুগ্রহ করে দপ্তরের স্তর ও নির্দিষ্ট দপ্তর নির্বাচন করুন।",
+      err_select_rating: "অনুগ্রহ করে ১ থেকে ৫ এর মধ্যে রেটিং নির্বাচন করুন।",
+      err_invalid_mobile: "অনুগ্রহ করে একটি বৈধ ১০ সংখ্যার মোবাইল নম্বর লিখুন।",
+      err_invalid_email: "অনুগ্রহ করে একটি বৈধ ইমেইল ঠিকানা লিখুন।",
+      err_submit_failed: "প্রতিক্রিয়া জমা দেওয়া সম্ভব হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করে পুনরায় চেষ্টা করুন।"
+    }
+  };
+
+  const OFFICE_NAMES_BN = {
+    "DM Office, Sepahijala": "ডিএম কার্যালয়, সিপাহীজলা",
+    "SDM Office - Bishalgarh": "এসডিএম কার্যালয় - বিশালগড়",
+    "SDM Office - Sonamura": "এসডিএম কার্যালয় - সোনামুড়া",
+    "SDM Office - Jampuijala": "এসডিএম কার্যালয় - জম্পুইজলা",
+    "BDO Office - Bishalgarh": "বিডিও কার্যালয় - বিশালগড়",
+    "BDO Office - Charilam": "বিডিও কার্যালয় - চড়িলাম",
+    "BDO Office - Nalchar": "বিডিও কার্যালয় - নলছড়",
+    "BDO Office - Mohanbhog": "বিডিও কার্যালয় - মোহনভোগ",
+    "BDO Office - Boxanagar": "বিডিও কার্যালয় - বক্সনগর",
+    "BDO Office - Kathalia": "বিডিও কার্যালয় - কাঁঠালিয়া",
+    "BDO Office - Jampuijala": "বিডিও কার্যালয় - জম্পুইজলা"
+  };
+
   const OFFICE_DATA = {
     "DM": [
       "DM Office, Sepahijala"
@@ -181,9 +309,56 @@
     ]
   };
 
+  let currentLang = localStorage.getItem("spj_feedback_lang") || "en";
   let selectedOfficeType = "";
   let selectedOffice = "";
   let selectedRating = 0;
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem("spj_feedback_lang", lang);
+
+    document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
+    const activeBtn = document.getElementById("btnLang" + (lang === "bn" ? "Bn" : "En"));
+    if (activeBtn) activeBtn.classList.add("active");
+
+    const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
+
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const key = el.getAttribute("data-i18n");
+      if (t[key] !== undefined) el.textContent = t[key];
+    });
+
+    document.querySelectorAll("[data-i18n-html]").forEach(el => {
+      const key = el.getAttribute("data-i18n-html");
+      if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+      const key = el.getAttribute("data-i18n-placeholder");
+      if (t[key] !== undefined) el.placeholder = t[key];
+    });
+
+    if (selectedOfficeType) {
+      renderOfficeChips(selectedOfficeType);
+    }
+  }
+
+  function renderOfficeChips(type) {
+    const container = document.getElementById("officeChipsContainer");
+    container.innerHTML = "";
+
+    const offices = OFFICE_DATA[type] || [];
+    offices.forEach((off) => {
+      const chip = document.createElement("div");
+      chip.className = "chip" + (selectedOffice === off ? " selected" : "");
+      chip.textContent = (currentLang === "bn") ? (OFFICE_NAMES_BN[off] || off) : off;
+      chip.onclick = function() {
+        selectSpecificOffice(off, chip);
+      };
+      container.appendChild(chip);
+    });
+  }
 
   function selectOfficeType(type) {
     selectedOfficeType = type;
@@ -194,25 +369,13 @@
     if (activeTile) activeTile.classList.add("selected");
 
     const specSection = document.getElementById("specificOfficeSection");
-    const container = document.getElementById("officeChipsContainer");
-    container.innerHTML = "";
-
-    const offices = OFFICE_DATA[type] || [];
-    offices.forEach((off, idx) => {
-      const chip = document.createElement("div");
-      chip.className = "chip";
-      chip.textContent = off;
-      chip.onclick = function() {
-        selectSpecificOffice(off, chip);
-      };
-      container.appendChild(chip);
-    });
-
+    renderOfficeChips(type);
     specSection.style.display = "block";
 
     // Auto-select if only 1 office (e.g. DM Office)
+    const offices = OFFICE_DATA[type] || [];
     if (offices.length === 1) {
-      const firstChip = container.querySelector(".chip");
+      const firstChip = document.getElementById("officeChipsContainer").querySelector(".chip");
       if (firstChip) selectSpecificOffice(offices[0], firstChip);
     }
   }
@@ -254,14 +417,15 @@
 
   async function submitFeedback() {
     hideError();
+    const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
 
     if (!selectedOfficeType || !selectedOffice) {
-      showError("Please select the office level and specific office.");
+      showError(t.err_select_office);
       return;
     }
 
     if (!selectedRating) {
-      showError("Please select your experience rating from 1 to 5.");
+      showError(t.err_select_rating);
       return;
     }
 
@@ -270,18 +434,18 @@
     const feedback = document.getElementById("feedbackText").value.trim();
 
     if (mobile && !/^[6-9]\d{9}$/.test(mobile)) {
-      showError("Please enter a valid 10-digit Indian mobile number.");
+      showError(t.err_invalid_mobile);
       return;
     }
 
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showError("Please enter a valid email address.");
+      showError(t.err_invalid_email);
       return;
     }
 
     const submitBtn = document.getElementById("submitBtn");
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+    submitBtn.innerHTML = '<span class="spinner"></span> ' + t.submitting_btn;
 
     const payload = {
       mobile,
@@ -296,7 +460,7 @@
     const res = await apiPost("submitFeedback", { payload });
 
     submitBtn.disabled = false;
-    submitBtn.textContent = "Submit Feedback";
+    submitBtn.textContent = t.submit_btn;
 
     if (res && res.success) {
       const randomSuffix = Math.floor(1000 + Math.random() * 9000);
@@ -307,7 +471,7 @@
       document.getElementById("confirmSection").classList.add("show");
       document.getElementById("confirmSection").scrollIntoView({ behavior: "smooth", block: "center" });
     } else {
-      showError(res.error || "Failed to submit feedback. Please check connection and try again.");
+      showError((res && res.error) ? res.error : t.err_submit_failed);
     }
   }
 
@@ -339,6 +503,9 @@
   document.getElementById("mobile").addEventListener("input", function(e) {
     this.value = this.value.replace(/\D/g, "").slice(0, 10);
   });
+
+  // Initialize with stored or default language
+  setLanguage(currentLang);
 </script>
 </body>
 </html>
