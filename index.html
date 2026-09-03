@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sepahijala District Administration — Citizen Feedback Portal</title>
+  <meta name="description" content="Official Citizen Feedback Portal of Sepahijala District Administration, Government of Tripura. Share your experience and rating for DM, SDM, and BDO offices.">
+  <meta name="theme-color" content="#1F3D2E">
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="top-links">
+    <a class="dashboard-link" href="login.html">Dashboard login ↗</a>
+  </div>
+
+  <div class="portal">
+    <!-- Identity / hero panel -->
+    <div class="hero">
+      <svg class="hero-canopy" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid slice">
+        <g fill="none" stroke="rgba(184,146,74,0.35)" stroke-width="1.2">
+          <path d="M20 40 C 60 10, 120 10, 150 45 C 130 55, 90 60, 60 50 C 40 60, 20 55, 20 40 Z"/>
+          <path d="M340 90 C 380 60, 400 100, 380 130 C 360 120, 345 105, 340 90 Z"/>
+          <path d="M10 480 C 50 440, 110 450, 130 490 C 90 500, 40 500, 10 480 Z"/>
+          <path d="M300 460 C 340 430, 395 445, 400 485 C 360 495, 320 485, 300 460 Z"/>
+        </g>
+      </svg>
+      <div class="hero-content">
+        <a href="index.html" class="seal" title="District Administration Sepahijala, Bishramganj">
+          <img src="logo.jpg" alt="District Administration Sepahijala" />
+        </a>
+        <p class="eyebrow-office">Office of the District Magistrate &amp; Collector</p>
+        <p class="eyebrow-district">Sepahijala District, Tripura</p>
+        <h1>Citizen Feedback Portal</h1>
+        <p class="lede">Help us serve you better. Share your experience with the district administration, sub-division offices, and development blocks.</p>
+      </div>
+      <div class="hero-foot">
+        <strong>Government of Tripura</strong>
+        Designed by National Informatics Centre (NIC), Sepahijala
+      </div>
+    </div>
+
+    <!-- Form / slip panel -->
+    <div class="slip">
+      <div class="perforation"></div>
+      
+      <!-- Interactive Form Section -->
+      <div class="slip-inner" id="formSection">
+        
+        <!-- Fieldset 1: Level Tile -->
+        <fieldset>
+          <legend>1. Select Office Level <span class="hint">দপ্তরের স্তর নির্বাচন করুন</span></legend>
+          <div class="tile-row">
+            <div class="tile" id="tile-DM" onclick="selectOfficeType('DM')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/>
+              </svg>
+              <span>DM Office</span>
+            </div>
+            <div class="tile" id="tile-SDM" onclick="selectOfficeType('SDM')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              <span>SDM Office</span>
+            </div>
+            <div class="tile" id="tile-BDO" onclick="selectOfficeType('BDO')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+              <span>BDO Office</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Fieldset 2: Specific Office Chips -->
+        <fieldset id="specificOfficeSection" style="display: none;">
+          <legend>2. Specific Office <span class="hint">নির্দিষ্ট দপ্তর বেছে নিন</span></legend>
+          <div class="chip-row" id="officeChipsContainer">
+            <!-- Dynamically populated chips -->
+          </div>
+        </fieldset>
+
+        <!-- Fieldset 3: Experience Rating -->
+        <fieldset>
+          <legend>3. Your Experience Rating <span class="hint">আপনার অভিজ্ঞতা রেটিং</span></legend>
+          <div class="scale">
+            <button type="button" id="rate-1" onclick="setRating(1)">
+              <span class="n">1</span>
+              <span class="lbl">Poor / খারাপ</span>
+            </button>
+            <button type="button" id="rate-2" onclick="setRating(2)">
+              <span class="n">2</span>
+              <span class="lbl">Fair / মোটামুটি</span>
+            </button>
+            <button type="button" id="rate-3" onclick="setRating(3)">
+              <span class="n">3</span>
+              <span class="lbl">Good / ভালো</span>
+            </button>
+            <button type="button" id="rate-4" onclick="setRating(4)">
+              <span class="n">4</span>
+              <span class="lbl">Very Good / খুব ভালো</span>
+            </button>
+            <button type="button" id="rate-5" onclick="setRating(5)">
+              <span class="n">5</span>
+              <span class="lbl">Excellent / চমৎকার</span>
+            </button>
+          </div>
+        </fieldset>
+
+        <!-- Fieldset 4: Remarks / Suggestions -->
+        <fieldset>
+          <legend>4. Feedback / Suggestions <span class="hint">মতামত ও পরামর্শ (ঐচ্ছিক)</span></legend>
+          <textarea id="feedbackText" placeholder="Share your experience, grievance, or suggestions for improvement..."></textarea>
+        </fieldset>
+
+        <!-- Fieldset 5: Contact Details -->
+        <fieldset>
+          <legend>5. Contact Details (Optional) <span class="hint">যোগাযোগের বিবরণ</span></legend>
+          <div class="contact-row">
+            <input type="tel" id="mobile" maxlength="10" placeholder="10-digit mobile number" />
+            <input type="email" id="email" placeholder="Email address (optional)" />
+          </div>
+        </fieldset>
+
+        <!-- Alert Notification -->
+        <div id="alertBox" class="alert"></div>
+
+        <!-- Submit Row -->
+        <div class="submit-row">
+          <button type="button" id="submitBtn" onclick="submitFeedback()" class="submit-btn">Submit Feedback</button>
+          <div class="error-note" id="inlineError">Please select an office and star rating before submitting.</div>
+        </div>
+
+      </div>
+
+      <!-- Confirmation Screen -->
+      <div class="confirm" id="confirmSection">
+        <div class="check">✓</div>
+        <h2>Feedback Recorded! / ধন্যবাদ</h2>
+        <div class="ticket-id" id="ticketIdDisplay">Ref: SPJ-FB-2026-0001</div>
+        <p>Your feedback has been securely submitted to the District Administration, Sepahijala. Thank you for contributing to better public service delivery.</p>
+        <button type="button" class="again-btn" onclick="resetForm()">Submit Another Response</button>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="page-foot">
+    <div>Office of the District Magistrate &amp; Collector, Sepahijala District, Tripura</div>
+    <div class="updated">Designed &amp; Developed by <strong>NIC Sepahijala District Centre</strong></div>
+  </footer>
+
+</div>
+
+<script src="app.js"></script>
+<script>
+  const OFFICE_DATA = {
+    "DM": [
+      "DM Office, Sepahijala"
+    ],
+    "SDM": [
+      "SDM Office - Bishalgarh",
+      "SDM Office - Sonamura",
+      "SDM Office - Jampuijala"
+    ],
+    "BDO": [
+      "BDO Office - Bishalgarh",
+      "BDO Office - Charilam",
+      "BDO Office - Nalchar",
+      "BDO Office - Mohanbhog",
+      "BDO Office - Boxanagar",
+      "BDO Office - Kathalia",
+      "BDO Office - Jampuijala"
+    ]
+  };
+
+  let selectedOfficeType = "";
+  let selectedOffice = "";
+  let selectedRating = 0;
+
+  function selectOfficeType(type) {
+    selectedOfficeType = type;
+    selectedOffice = "";
+
+    document.querySelectorAll(".tile").forEach(t => t.classList.remove("selected"));
+    const activeTile = document.getElementById("tile-" + type);
+    if (activeTile) activeTile.classList.add("selected");
+
+    const specSection = document.getElementById("specificOfficeSection");
+    const container = document.getElementById("officeChipsContainer");
+    container.innerHTML = "";
+
+    const offices = OFFICE_DATA[type] || [];
+    offices.forEach((off, idx) => {
+      const chip = document.createElement("div");
+      chip.className = "chip";
+      chip.textContent = off;
+      chip.onclick = function() {
+        selectSpecificOffice(off, chip);
+      };
+      container.appendChild(chip);
+    });
+
+    specSection.style.display = "block";
+
+    // Auto-select if only 1 office (e.g. DM Office)
+    if (offices.length === 1) {
+      const firstChip = container.querySelector(".chip");
+      if (firstChip) selectSpecificOffice(offices[0], firstChip);
+    }
+  }
+
+  function selectSpecificOffice(officeName, chipEl) {
+    selectedOffice = officeName;
+    document.querySelectorAll(".chip").forEach(c => c.classList.remove("selected"));
+    if (chipEl) chipEl.classList.add("selected");
+    hideError();
+  }
+
+  function setRating(val) {
+    selectedRating = val;
+    for (let i = 1; i <= 5; i++) {
+      const btn = document.getElementById("rate-" + i);
+      if (btn) {
+        if (i === val) btn.classList.add("selected");
+        else btn.classList.remove("selected");
+      }
+    }
+    hideError();
+  }
+
+  function showError(msg) {
+    const alertBox = document.getElementById("alertBox");
+    alertBox.className = "alert alert-error";
+    alertBox.textContent = msg;
+    alertBox.style.display = "block";
+
+    const inlineErr = document.getElementById("inlineError");
+    inlineErr.textContent = msg;
+    inlineErr.classList.add("show");
+  }
+
+  function hideError() {
+    document.getElementById("alertBox").style.display = "none";
+    document.getElementById("inlineError").classList.remove("show");
+  }
+
+  async function submitFeedback() {
+    hideError();
+
+    if (!selectedOfficeType || !selectedOffice) {
+      showError("Please select the office level and specific office.");
+      return;
+    }
+
+    if (!selectedRating) {
+      showError("Please select your experience rating from 1 to 5.");
+      return;
+    }
+
+    const mobile = document.getElementById("mobile").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const feedback = document.getElementById("feedbackText").value.trim();
+
+    if (mobile && !/^[6-9]\d{9}$/.test(mobile)) {
+      showError("Please enter a valid 10-digit Indian mobile number.");
+      return;
+    }
+
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError("Please enter a valid email address.");
+      return;
+    }
+
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+    const payload = {
+      mobile,
+      email,
+      office: selectedOffice,
+      officeType: selectedOfficeType,
+      service: "General Administration",
+      rating: selectedRating,
+      feedback
+    };
+
+    const res = await apiPost("submitFeedback", { payload });
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit Feedback";
+
+    if (res && res.success) {
+      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+      const ticketRef = res.ticketId || `SPJ-FB-${new Date().getFullYear()}-${randomSuffix}`;
+      document.getElementById("ticketIdDisplay").textContent = "Ref ID: " + ticketRef;
+
+      document.getElementById("formSection").classList.add("hide");
+      document.getElementById("confirmSection").classList.add("show");
+      document.getElementById("confirmSection").scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      showError(res.error || "Failed to submit feedback. Please check connection and try again.");
+    }
+  }
+
+  function resetForm() {
+    selectedOfficeType = "";
+    selectedOffice = "";
+    selectedRating = 0;
+
+    document.querySelectorAll(".tile").forEach(t => t.classList.remove("selected"));
+    document.getElementById("specificOfficeSection").style.display = "none";
+    document.getElementById("officeChipsContainer").innerHTML = "";
+
+    for (let i = 1; i <= 5; i++) {
+      const btn = document.getElementById("rate-" + i);
+      if (btn) btn.classList.remove("selected");
+    }
+
+    document.getElementById("feedbackText").value = "";
+    document.getElementById("mobile").value = "";
+    document.getElementById("email").value = "";
+    hideError();
+
+    document.getElementById("confirmSection").classList.remove("show");
+    document.getElementById("formSection").classList.remove("hide");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // Format mobile input to allow digits only up to 10
+  document.getElementById("mobile").addEventListener("input", function(e) {
+    this.value = this.value.replace(/\D/g, "").slice(0, 10);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback Dashboard — Sepahijala District Administration</title>
+  <meta name="description" content="Feedback Analytics Dashboard for Sepahijala District Administration. View ratings, statistics, and citizen feedback.">
+  <meta name="theme-color" content="#1F3D2E">
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page page-dashboard">
+
+  <!-- Top Dashboard Navbar -->
+  <nav class="dash-navbar">
+    <a href="index.html" class="dash-brand-link" title="Go to Citizen Feedback Portal">
+      <div class="dash-brand-icon">
+        <img src="logo.jpg" alt="Logo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+      </div>
+      <div>
+        <div class="dash-title">Feedback Dashboard</div>
+        <div class="dash-subtitle" id="userSubHead">Sepahijala District Administration</div>
+      </div>
+    </a>
+    
+    <div class="dash-actions">
+      <a href="index.html" class="dash-btn dash-btn-brass">Citizen Form ↗</a>
+      <button onclick="loadDashboardData()" class="dash-btn dash-btn-outline">Refresh</button>
+      <button onclick="logout()" class="dash-btn dash-btn-outline">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Filter Bar: Level Pills & Interconnected Office Dropdown -->
+  <div class="filter-bar">
+    <div class="level-pills">
+      <button type="button" class="dash-pill-btn active" id="pill-DM" onclick="selectLevelPill('DM')">DM Level</button>
+      <button type="button" class="dash-pill-btn" id="pill-SDM" onclick="selectLevelPill('SDM')">SDM Level</button>
+      <button type="button" class="dash-pill-btn" id="pill-BDO" onclick="selectLevelPill('BDO')">BDO Level</button>
+    </div>
+
+    <div style="min-width: 280px; flex: 1; max-width: 420px;">
+      <select id="officeFilterSelect" onchange="onOfficeSelectChange()">
+        <!-- Options dynamically populated by active level pill -->
+      </select>
+    </div>
+  </div>
+
+  <div id="alertBox" class="alert"></div>
+
+  <!-- Cumulative Overview -->
+  <div style="margin: 20px 0 15px;">
+    <h2 class="dash-section-title" id="cumulativeTitle">All Offices — Cumulative District View</h2>
+  </div>
+
+  <div class="cumulative-summary-grid">
+    <div class="stat-box accent-forest">
+      <div class="stat-title">Total Responses Recorded</div>
+      <div class="stat-number" id="statTotalResponses">0</div>
+      <div class="stat-subtext" id="statTotalSubtext">All Offices — Cumulative District Overview</div>
+    </div>
+    <div class="stat-box accent-clay">
+      <div class="stat-title">Average District Rating</div>
+      <div class="stat-number" id="statAvgRating">0.0</div>
+      <div class="stat-subtext">Out of 5.0 maximum rating</div>
+    </div>
+  </div>
+
+  <!-- Office-wise Summary Cards -->
+  <div style="margin: 30px 0 15px;">
+    <h2 class="dash-section-title">Office-wise Performance Breakdown</h2>
+  </div>
+
+  <div class="office-summary-grid" id="officeCardsGrid">
+    <div style="color: var(--ink-soft); font-size: 14px;">Loading office summary...</div>
+  </div>
+
+  <!-- Recent Submissions Table with Live Search & CSV Export -->
+  <div class="dash-table-header" style="margin-top: 35px;">
+    <h2 class="dash-section-title" style="margin-bottom: 0;">Recent Citizen Submissions</h2>
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+      <div class="table-search-box">
+        <input type="text" id="tableSearchInput" class="table-search-input" placeholder="🔍 Search feedback or office..." oninput="filterTable()" />
+      </div>
+      <button onclick="exportToCsv()" class="dash-btn dash-btn-clay" title="Download filtered feedback as Excel CSV file">📥 Export CSV</button>
+    </div>
+  </div>
+
+  <div class="data-table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Office</th>
+          <th>Rating</th>
+          <th>Feedback / Remarks</th>
+        </tr>
+      </thead>
+      <tbody id="recentTableBody">
+        <tr><td colspan="4" style="text-align:center; color: var(--ink-soft); padding: 24px;">Loading recent submissions...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="page-foot">
+    <div>Office of the District Magistrate &amp; Collector, Sepahijala District, Tripura</div>
+    <div class="updated">Designed &amp; Developed by <strong>NIC Sepahijala District Centre</strong></div>
+  </footer>
+
+</div>
+
+<script src="app.js"></script>
+<script>
+  const token = checkAuthOrRedirect();
+  let dashboardData = null;
+
+  let userRole = localStorage.getItem("spj_feedback_role") || "DM";
+  let userOffice = localStorage.getItem("spj_feedback_office") || "DM Office, Sepahijala";
+
+  let currentLevelFilter = userRole === "BDO" ? "BDO" : (userRole === "SDM" ? "SDM" : "DM");
+
+  const REGION_MAP = {
+    "SDM Office - Bishalgarh": {
+      regionName: "Bishalgarh Region",
+      bdos: ["BDO Office - Bishalgarh", "BDO Office - Charilam"]
+    },
+    "SDM Office - Sonamura": {
+      regionName: "Sonamura Region",
+      bdos: ["BDO Office - Boxanagar", "BDO Office - Kathalia", "BDO Office - Mohanbhog", "BDO Office - Nalchar"]
+    },
+    "SDM Office - Jampuijala": {
+      regionName: "Jampuijala Region",
+      bdos: ["BDO Office - Jampuijala"]
+    }
+  };
+
+  function logout() {
+    clearAuth();
+    window.location.href = "login.html";
+  }
+
+  function initRolePermissions() {
+    const btnDm = document.getElementById("pill-DM");
+    const btnSdm = document.getElementById("pill-SDM");
+    const btnBdo = document.getElementById("pill-BDO");
+    const subHead = document.getElementById("userSubHead");
+
+    if (userOffice) {
+      subHead.textContent = userOffice + " (" + userRole + ")";
+    }
+
+    if (userRole === "SDM") {
+      btnDm.disabled = true;
+      btnDm.classList.add("disabled");
+    } else if (userRole === "BDO") {
+      btnDm.disabled = true;
+      btnDm.classList.add("disabled");
+      btnSdm.disabled = true;
+      btnSdm.classList.add("disabled");
+    }
+
+    document.querySelectorAll(".dash-pill-btn").forEach(b => b.classList.remove("active"));
+    const activeBtn = document.getElementById("pill-" + currentLevelFilter);
+    if (activeBtn) activeBtn.classList.add("active");
+  }
+
+  function selectLevelPill(level) {
+    const btn = document.getElementById("pill-" + level);
+    if (btn.disabled || btn.classList.contains("disabled")) return;
+
+    currentLevelFilter = level;
+    document.querySelectorAll(".dash-pill-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    populateDropdownByLevel(level);
+    loadDashboardData();
+  }
+
+  function populateDropdownByLevel(level) {
+    const select = document.getElementById("officeFilterSelect");
+    select.innerHTML = "";
+
+    if (level === "DM") {
+      if (userRole === "DM") {
+        const optAll = document.createElement("option");
+        optAll.value = "All";
+        optAll.textContent = "All Offices (Cumulative District View)";
+        select.appendChild(optAll);
+
+        const optDm = document.createElement("option");
+        optDm.value = "DM Office, Sepahijala";
+        optDm.textContent = "DM Office, Sepahijala";
+        select.appendChild(optDm);
+      }
+    } 
+    else if (level === "SDM") {
+      if (userRole === "DM") {
+        const groupRegions = document.createElement("optgroup");
+        groupRegions.label = "SDM Regions (Cumulative SDM + BDOs)";
+        ["Bishalgarh Region", "Sonamura Region", "Jampuijala Region"].forEach(r => {
+          const opt = document.createElement("option");
+          opt.value = r;
+          opt.textContent = r;
+          groupRegions.appendChild(opt);
+        });
+        select.appendChild(groupRegions);
+
+        const groupOffices = document.createElement("optgroup");
+        groupOffices.label = "Specific SDM Offices";
+        ["SDM Office - Bishalgarh", "SDM Office - Sonamura", "SDM Office - Jampuijala"].forEach(s => {
+          const opt = document.createElement("option");
+          opt.value = s;
+          opt.textContent = s;
+          groupOffices.appendChild(opt);
+        });
+        select.appendChild(groupOffices);
+      } 
+      else if (userRole === "SDM") {
+        const regionInfo = REGION_MAP[userOffice];
+        if (regionInfo) {
+          const optRegion = document.createElement("option");
+          optRegion.value = regionInfo.regionName;
+          optRegion.textContent = regionInfo.regionName + " (Cumulative Region)";
+          select.appendChild(optRegion);
+        }
+
+        const optOffice = document.createElement("option");
+        optOffice.value = userOffice;
+        optOffice.textContent = userOffice + " (Office Only)";
+        select.appendChild(optOffice);
+      }
+    } 
+    else if (level === "BDO") {
+      if (userRole === "DM") {
+        const allBdos = [
+          "BDO Office - Bishalgarh",
+          "BDO Office - Charilam",
+          "BDO Office - Nalchar",
+          "BDO Office - Mohanbhog",
+          "BDO Office - Boxanagar",
+          "BDO Office - Kathalia",
+          "BDO Office - Jampuijala"
+        ];
+        allBdos.forEach(b => {
+          const opt = document.createElement("option");
+          opt.value = b;
+          opt.textContent = b;
+          select.appendChild(opt);
+        });
+      } 
+      else if (userRole === "SDM") {
+        const regionInfo = REGION_MAP[userOffice];
+        if (regionInfo && regionInfo.bdos) {
+          regionInfo.bdos.forEach(b => {
+            const opt = document.createElement("option");
+            opt.value = b;
+            opt.textContent = b;
+            select.appendChild(opt);
+          });
+        }
+      } 
+      else if (userRole === "BDO") {
+        const opt = document.createElement("option");
+        opt.value = userOffice;
+        opt.textContent = userOffice;
+        select.appendChild(opt);
+      }
+    }
+  }
+
+  function onOfficeSelectChange() {
+    loadDashboardData();
+  }
+
+  async function loadDashboardData() {
+    const alertBox = document.getElementById("alertBox");
+    alertBox.style.display = "none";
+
+    const refreshBtn = document.querySelector(".dash-btn-outline");
+    if (refreshBtn && refreshBtn.textContent.includes("Refresh")) {
+      refreshBtn.innerHTML = '<span class="spinner"></span> Refreshing...';
+    }
+
+    const selectedOffice = document.getElementById("officeFilterSelect").value || "All";
+    const res = await apiPost("getDashboardData", { token, officeFilter: selectedOffice });
+
+    if (refreshBtn && refreshBtn.textContent.includes("Refresh")) {
+      refreshBtn.textContent = "Refresh";
+    }
+
+    if (!res || !res.success) {
+      if (res && res.error && res.error.includes("Unauthorized")) {
+        clearAuth();
+        window.location.href = "login.html";
+        return;
+      }
+      alertBox.className = "alert alert-error";
+      alertBox.textContent = (res && res.error) ? res.error : "Failed to load dashboard data. Check GAS backend endpoint.";
+      return;
+    }
+
+    dashboardData = res;
+    if (res.role) userRole = res.role;
+    if (res.ownOffice) userOffice = res.ownOffice;
+
+    renderDashboard();
+  }
+
+  function renderDashboard() {
+    if (!dashboardData) return;
+
+    const selectedOffice = document.getElementById("officeFilterSelect").value || "All";
+    let titleText = "All Offices — Cumulative District View";
+    if (selectedOffice === "All") {
+      titleText = "All Offices — Cumulative District View";
+    } else if (selectedOffice.indexOf("Region") !== -1) {
+      titleText = selectedOffice + " — Cumulative Overview";
+    } else {
+      titleText = selectedOffice + " — Overview";
+    }
+
+    document.getElementById("cumulativeTitle").textContent = titleText;
+    document.getElementById("statTotalSubtext").textContent = titleText;
+
+    document.getElementById("statTotalResponses").textContent = dashboardData.totalCount || 0;
+    document.getElementById("statAvgRating").textContent = dashboardData.avgRating ? dashboardData.avgRating.toFixed(1) : "0.0";
+
+    const grid = document.getElementById("officeCardsGrid");
+    let breakdown = dashboardData.officeBreakdown || [];
+
+    if (currentLevelFilter === "DM") {
+      breakdown = breakdown.filter(o => o.office.includes("DM"));
+    } else if (currentLevelFilter === "SDM") {
+      breakdown = breakdown.filter(o => o.office.includes("SDM"));
+    } else if (currentLevelFilter === "BDO") {
+      breakdown = breakdown.filter(o => o.office.includes("BDO"));
+    }
+
+    if (breakdown.length === 0) {
+      grid.innerHTML = '<div style="color: var(--ink-soft); font-size: 14px; grid-column: 1/-1;">No records found for current selection.</div>';
+    } else {
+      grid.innerHTML = breakdown.map(o => {
+        const stars = renderStars(o.avgRating);
+        const badge = o.avgRating >= 4.8 ? ' 🥇' : (o.avgRating >= 4.5 ? ' 🥈' : '');
+        return `
+          <div class="office-stat-card">
+            <div>
+              <div class="office-card-header">
+                <span>${escapeHtml(o.office)}${badge}</span>
+              </div>
+              <div class="office-score-row">
+                <div class="score-text">${o.avgRating}<span> / 5</span></div>
+                <div class="response-count">${o.count} response${o.count === 1 ? '' : 's'}</div>
+              </div>
+              <div class="star-rating-display">${stars}</div>
+            </div>
+            <div class="card-bottom-bar"></div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    filterTable();
+  }
+
+  function filterTable() {
+    if (!dashboardData) return;
+    const query = (document.getElementById("tableSearchInput") ? document.getElementById("tableSearchInput").value : "").toLowerCase().trim();
+    const recent = dashboardData.recent || [];
+
+    const filtered = recent.filter(r => {
+      if (!query) return true;
+      const text = `${r.date || ''} ${r.office || ''} ${r.rating || ''} ${r.feedback || ''}`.toLowerCase();
+      return text.includes(query);
+    });
+
+    const recentBody = document.getElementById("recentTableBody");
+
+    if (filtered.length === 0) {
+      recentBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--ink-soft); padding: 24px;">No matching citizen feedback found.</td></tr>';
+    } else {
+      recentBody.innerHTML = filtered.map(r => `
+        <tr>
+          <td>${escapeHtml(r.date)}</td>
+          <td><strong>${escapeHtml(r.office)}</strong></td>
+          <td><span style="color: var(--brass); letter-spacing: 2px;">${renderStars(r.rating)}</span></td>
+          <td>${escapeHtml(r.feedback || "—")}</td>
+        </tr>
+      `).join("");
+    }
+  }
+
+  function exportToCsv() {
+    if (!dashboardData || !dashboardData.recent || dashboardData.recent.length === 0) {
+      alert("No feedback records to export.");
+      return;
+    }
+
+    const query = (document.getElementById("tableSearchInput") ? document.getElementById("tableSearchInput").value : "").toLowerCase().trim();
+    const recent = dashboardData.recent || [];
+    const filtered = recent.filter(r => {
+      if (!query) return true;
+      const text = `${r.date || ''} ${r.office || ''} ${r.rating || ''} ${r.feedback || ''}`.toLowerCase();
+      return text.includes(query);
+    });
+
+    let csvContent = "\uFEFF"; // UTF-8 BOM for Excel
+    csvContent += "Date,Office Level,Office Name,Rating,Feedback\r\n";
+
+    filtered.forEach(r => {
+      const date = `"${(r.date || "").replace(/"/g, '""')}"`;
+      const level = `"${(r.level || "").replace(/"/g, '""')}"`;
+      const office = `"${(r.office || "").replace(/"/g, '""')}"`;
+      const rating = `"${r.rating || ""}"`;
+      const feedback = `"${(r.feedback || "").replace(/"/g, '""')}"`;
+      csvContent += `${date},${level},${office},${rating},${feedback}\r\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const timestamp = new Date().toISOString().slice(0, 10);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Sepahijala_Feedback_${timestamp}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  function renderStars(rating) {
+    const full = Math.floor(rating);
+    let stars = "";
+    for (let i = 1; i <= 5; i++) {
+      if (i <= full) stars += "★";
+      else stars += "☆";
+    }
+    return stars;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return "";
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  initRolePermissions();
+  populateDropdownByLevel(currentLevelFilter);
+  loadDashboardData();
+</script>
+</body>
+</html>

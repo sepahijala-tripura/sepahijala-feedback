@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password — Sepahijala District Administration</title>
+  <meta name="description" content="Password Reset Portal with Email OTP Verification for Sepahijala District Administration.">
+  <meta name="theme-color" content="#1F3D2E">
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page page-auth">
+
+  <div class="top-links">
+    <a class="dashboard-link" href="login.html">← Back to Sign In</a>
+  </div>
+
+  <div class="single-card">
+    <div style="text-align: center; margin-bottom: 24px;">
+      <div class="seal" style="margin: 0 auto 16px;">
+        <img src="logo.jpg" alt="District Administration Sepahijala" />
+      </div>
+      <p class="eyebrow-office" style="color: var(--ink-soft); margin-bottom: 2px;">Office of the DM &amp; Collector, Sepahijala</p>
+      <h2 style="font-size: 26px; color: var(--forest-deep);">Password Reset Portal</h2>
+      <p id="stepSubtitle" style="color: var(--ink-soft); font-size: 14px; margin-top: 6px;">Step 1: Enter your registered admin email</p>
+    </div>
+
+    <div id="alertBox" class="alert"></div>
+
+    <!-- Step 1: Send OTP -->
+    <form id="step1Form">
+      <div style="margin-bottom: 22px;">
+        <label style="font-size: 13.5px; font-weight: 600; color: var(--forest-deep); display: block; margin-bottom: 6px;">Registered Admin Email</label>
+        <input type="email" id="email" placeholder="admin.spj@gmail.com" required />
+      </div>
+      <button type="submit" id="btnStep1" class="submit-btn btn-full">Send 6-Digit OTP Code</button>
+    </form>
+
+    <!-- Step 2: Verify OTP -->
+    <form id="step2Form" class="hidden">
+      <div style="margin-bottom: 22px;">
+        <label style="font-size: 13.5px; font-weight: 600; color: var(--forest-deep); display: block; margin-bottom: 6px;">6-Digit OTP Verification Code</label>
+        <input type="text" id="otpCode" maxlength="6" placeholder="123456" required />
+      </div>
+      <button type="submit" id="btnStep2" class="submit-btn btn-full">Verify OTP</button>
+    </form>
+
+    <!-- Step 3: Set New Password -->
+    <form id="step3Form" class="hidden">
+      <div style="margin-bottom: 18px;">
+        <label style="font-size: 13.5px; font-weight: 600; color: var(--forest-deep); display: block; margin-bottom: 6px;">New Password</label>
+        <input type="password" id="newPassword" placeholder="••••••••" required />
+      </div>
+      <div style="margin-bottom: 24px;">
+        <label style="font-size: 13.5px; font-weight: 600; color: var(--forest-deep); display: block; margin-bottom: 6px;">Confirm New Password</label>
+        <input type="password" id="confirmPassword" placeholder="••••••••" required />
+      </div>
+      <button type="submit" id="btnStep3" class="submit-btn btn-full">Update New Password</button>
+    </form>
+
+    <div style="text-align: center; margin-top: 24px; font-size: 13.5px; border-top: 1px solid var(--line); padding-top: 18px;">
+      <a href="login.html" style="color: var(--forest); font-weight: 600; text-decoration: none;">← Return to Admin Sign In</a>
+    </div>
+  </div>
+
+  <footer class="page-foot">
+    <div>Office of the District Magistrate &amp; Collector, Sepahijala District, Tripura</div>
+    <div class="updated">Designed &amp; Developed by <strong>NIC Sepahijala District Centre</strong></div>
+  </footer>
+
+</div>
+
+<script src="app.js"></script>
+<script>
+  let userEmail = "";
+
+  function showAlert(msg, isSuccess = false) {
+    const alertBox = document.getElementById("alertBox");
+    alertBox.className = "alert " + (isSuccess ? "alert-success" : "alert-error");
+    alertBox.textContent = msg;
+    alertBox.style.display = "block";
+  }
+
+  function hideAlert() {
+    document.getElementById("alertBox").style.display = "none";
+  }
+
+  // Step 1: Send OTP
+  document.getElementById("step1Form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    hideAlert();
+    userEmail = document.getElementById("email").value.trim();
+    const btn = document.getElementById("btnStep1");
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Sending OTP...';
+
+    const res = await apiPost("sendOtp", { email: userEmail });
+    btn.disabled = false;
+    btn.textContent = "Send 6-Digit OTP Code";
+
+    if (res && res.success) {
+      showAlert("OTP code sent to " + userEmail + ". Code valid for 10 minutes.", true);
+      document.getElementById("step1Form").classList.add("hidden");
+      document.getElementById("step2Form").classList.remove("hidden");
+      document.getElementById("stepSubtitle").textContent = "Step 2: Enter the 6-digit OTP code sent to your email";
+      document.getElementById("otpCode").focus();
+    } else {
+      showAlert((res && res.error) ? res.error : "Failed to send OTP code. Please check email address.");
+    }
+  });
+
+  // Step 2: Verify OTP
+  document.getElementById("step2Form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    hideAlert();
+    const code = document.getElementById("otpCode").value.trim();
+    const btn = document.getElementById("btnStep2");
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Verifying...';
+
+    const res = await apiPost("verifyOtp", { email: userEmail, code: code });
+    btn.disabled = false;
+    btn.textContent = "Verify OTP";
+
+    if (res && res.success) {
+      showAlert("OTP verified successfully! Now choose your new password.", true);
+      document.getElementById("step2Form").classList.add("hidden");
+      document.getElementById("step3Form").classList.remove("hidden");
+      document.getElementById("stepSubtitle").textContent = "Step 3: Enter and confirm your new secure password";
+      document.getElementById("newPassword").focus();
+    } else {
+      showAlert((res && res.error) ? res.error : "Invalid or expired OTP code.");
+    }
+  });
+
+  // Step 3: Set New Password
+  document.getElementById("step3Form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    hideAlert();
+    const pass = document.getElementById("newPassword").value;
+    const confirm = document.getElementById("confirmPassword").value;
+    const btn = document.getElementById("btnStep3");
+
+    if (pass !== confirm) {
+      showAlert("Passwords do not match.");
+      return;
+    }
+    if (pass.length < 6) {
+      showAlert("Password must be at least 6 characters long.");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Updating Password...';
+
+    const res = await apiPost("resetPassword", { email: userEmail, newPassword: pass });
+    btn.disabled = false;
+    btn.textContent = "Update New Password";
+
+    if (res && res.success) {
+      showAlert("Password reset successful! Redirecting to login...", true);
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1400);
+    } else {
+      showAlert((res && res.error) ? res.error : "Failed to update password. Try again.");
+    }
+  });
+
+  // Format OTP code input to allow digits only up to 6
+  document.getElementById("otpCode").addEventListener("input", function() {
+    this.value = this.value.replace(/\D/g, "").slice(0, 6);
+  });
+</script>
+</body>
+</html>

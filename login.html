@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Sign In — Sepahijala District Administration</title>
+  <meta name="description" content="Authorized Admin Sign In Portal with Two-Factor Authentication for Sepahijala District Administration.">
+  <meta name="theme-color" content="#1F3D2E">
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--clay);
+      background: rgba(178, 80, 46, 0.12);
+      border: 1px solid rgba(178, 80, 46, 0.25);
+      border-radius: 20px;
+      padding: 4px 12px;
+      margin-bottom: 14px;
+    }
+    .resend-link {
+      font-size: 12.5px;
+      color: var(--clay);
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .resend-link:hover {
+      text-decoration: underline;
+    }
+    .resend-link:disabled {
+      color: var(--ink-soft);
+      cursor: not-allowed;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<div class="page page-auth">
+
+  <div class="top-links">
+    <a class="dashboard-link" href="index.html">← Public Feedback Form</a>
+  </div>
+
+  <div class="single-card">
+    <div style="text-align: center; margin-bottom: 20px;">
+      <div class="seal" style="margin: 0 auto 14px;">
+        <img src="logo.jpg" alt="District Administration Sepahijala" />
+      </div>
+      <p class="eyebrow-office" style="color: var(--ink-soft); margin-bottom: 2px;">Office of the DM &amp; Collector, Sepahijala</p>
+      <h2 style="font-size: 26px; color: var(--forest-deep);">Admin Portal Sign In</h2>
+      <p style="color: var(--ink-soft); font-size: 14px; margin-top: 4px;">Two-Factor Authentication (ID, Password &amp; Email OTP)</p>
+    </div>
+
+    <div id="alertBox" class="alert"></div>
+
+    <!-- ── STEP 1: ID & PASSWORD ──────────────────────────── -->
+    <div id="credentialsSection">
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="step-badge">Step 1 of 2: Admin Credentials</span>
+      </div>
+
+      <form id="credentialsForm">
+        <div style="margin-bottom: 18px;">
+          <label style="font-size: 13.5px; font-weight: 600; color: var(--forest-deep); display: block; margin-bottom: 6px;">Official Email / Gmail ID</label>
+          <input type="email" id="email" placeholder="e.g. sdm.bishalgarh@gmail.com" required />
+        </div>
+
+        <div style="margin-bottom: 22px;">
+          <label style="font-size: 13.5px; font-weight: 600; color: var(--forest-deep); display: block; margin-bottom: 6px;">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" id="btnContinue" class="submit-btn btn-full">Verify Credentials &amp; Send OTP →</button>
+      </form>
+    </div>
+
+    <!-- ── STEP 2: MANDATORY OTP VERIFICATION ─────────────── -->
+    <div id="otpSection" class="hidden">
+      <div style="text-align: center; margin-bottom: 14px;">
+        <span class="step-badge">Step 2 of 2: Mandatory OTP Verification</span>
+      </div>
+
+      <p style="font-size: 13.5px; color: var(--ink-soft); text-align: center; margin-bottom: 20px;">
+        A 6-digit security OTP has been sent to <br><strong id="sentEmailLabel" style="color: var(--forest-deep);"></strong>
+      </p>
+
+      <form id="otpForm">
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+            <label style="font-size: 13.5px; font-weight: 600; color: var(--forest-deep);">Enter 6-Digit OTP</label>
+            <a href="javascript:void(0)" onclick="backToCredentials()" style="font-size: 12.5px; color: var(--clay); font-weight: 600; text-decoration: none;">Change ID/Password</a>
+          </div>
+          <input type="text" id="otpCode" maxlength="6" placeholder="123456" style="text-align: center; letter-spacing: 4px; font-size: 20px; font-weight: 700;" required autocomplete="one-time-code" />
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; font-size: 12.5px; color: var(--ink-soft);">
+          <span>Valid for 10 minutes</span>
+          <a href="javascript:void(0)" id="resendBtn" class="resend-link" onclick="resendOtp()">Resend OTP</a>
+        </div>
+
+        <button type="submit" id="btnVerifyAndLogin" class="submit-btn btn-full">Verify OTP &amp; Sign In</button>
+      </form>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; font-size: 13.5px; border-top: 1px solid var(--line); padding-top: 18px;">
+      <a href="reset.html" style="color: var(--clay); font-weight: 600; text-decoration: none;">Forgot password?</a>
+      <a href="index.html" style="color: var(--forest); font-weight: 600; text-decoration: none;">Citizen Form ↗</a>
+    </div>
+  </div>
+
+  <footer class="page-foot">
+    <div>Office of the District Magistrate &amp; Collector, Sepahijala District, Tripura</div>
+    <div class="updated">Designed &amp; Developed by <strong>NIC Sepahijala District Centre</strong></div>
+  </footer>
+
+</div>
+
+<script src="app.js"></script>
+<script>
+  let verifiedEmail = "";
+  let resendCooldown = false;
+
+  function showAlert(msg, isSuccess = false) {
+    const alertBox = document.getElementById("alertBox");
+    alertBox.className = "alert " + (isSuccess ? "alert-success" : "alert-error");
+    alertBox.textContent = msg;
+    alertBox.style.display = "block";
+  }
+
+  function hideAlert() {
+    document.getElementById("alertBox").style.display = "none";
+  }
+
+  function backToCredentials() {
+    hideAlert();
+    document.getElementById("otpSection").classList.add("hidden");
+    document.getElementById("credentialsSection").classList.remove("hidden");
+    document.getElementById("otpCode").value = "";
+  }
+
+  // ── STEP 1: Verify ID & Password, then Send OTP ──────────────
+  document.getElementById("credentialsForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    hideAlert();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const btn = document.getElementById("btnContinue");
+
+    if (!email || !password) {
+      showAlert("Please enter both email and password.");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Verifying Credentials...';
+
+    // 1. Validate ID and Password first
+    const loginCheck = await apiPost("login", { email, password });
+
+    if (!loginCheck || !loginCheck.success) {
+      btn.disabled = false;
+      btn.textContent = "Verify Credentials & Send OTP →";
+      showAlert((loginCheck && loginCheck.error) ? loginCheck.error : "Invalid email or password.");
+      return;
+    }
+
+    // 2. Credentials valid! Now send mandatory Login OTP
+    btn.innerHTML = '<span class="spinner"></span> Sending Security OTP...';
+    const otpRes = await apiPost("sendLoginOtp", { email });
+
+    btn.disabled = false;
+    btn.textContent = "Verify Credentials & Send OTP →";
+
+    if (otpRes && otpRes.success) {
+      verifiedEmail = email;
+      document.getElementById("sentEmailLabel").textContent = email;
+
+      document.getElementById("credentialsSection").classList.add("hidden");
+      document.getElementById("otpSection").classList.remove("hidden");
+      document.getElementById("otpCode").focus();
+
+      showAlert("Credentials verified! Security OTP sent to " + email, true);
+    } else {
+      showAlert((otpRes && otpRes.error) ? otpRes.error : "Failed to send OTP to email. Please try again.");
+    }
+  });
+
+  // ── STEP 2: Verify OTP and Login ─────────────────────────────
+  document.getElementById("otpForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    hideAlert();
+
+    const code = document.getElementById("otpCode").value.trim();
+    const btn = document.getElementById("btnVerifyAndLogin");
+
+    if (!code || code.length !== 6) {
+      showAlert("Please enter the complete 6-digit OTP code.");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Verifying OTP &amp; Signing In...';
+
+    const res = await apiPost("verifyLoginOtp", { email: verifiedEmail, code: code });
+
+    btn.disabled = false;
+    btn.textContent = "Verify OTP & Sign In";
+
+    if (res && res.success) {
+      setAuthToken(res.token);
+      saveUserInfo(res.email, res.role, res.office);
+      showAlert("Two-Factor Authentication successful! Redirecting...", true);
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 700);
+    } else {
+      showAlert((res && res.error) ? res.error : "Invalid or expired OTP code.");
+    }
+  });
+
+  // Format OTP code input to allow digits only up to 6
+  document.getElementById("otpCode").addEventListener("input", function() {
+    this.value = this.value.replace(/\D/g, "").slice(0, 6);
+  });
+
+  // ── Resend OTP Helper ─────────────────────────────────────────
+  async function resendOtp() {
+    if (resendCooldown || !verifiedEmail) return;
+
+    hideAlert();
+    const resendBtn = document.getElementById("resendBtn");
+    resendBtn.textContent = "Sending...";
+    resendCooldown = true;
+
+    const res = await apiPost("sendLoginOtp", { email: verifiedEmail });
+
+    if (res && res.success) {
+      showAlert("A fresh 6-digit OTP has been sent to " + verifiedEmail, true);
+      let countdown = 30;
+      resendBtn.style.pointerEvents = "none";
+      resendBtn.style.opacity = "0.6";
+
+      const timer = setInterval(() => {
+        resendBtn.textContent = "Resend (" + countdown + "s)";
+        countdown--;
+        if (countdown < 0) {
+          clearInterval(timer);
+          resendBtn.textContent = "Resend OTP";
+          resendBtn.style.pointerEvents = "auto";
+          resendBtn.style.opacity = "1";
+          resendCooldown = false;
+        }
+      }, 1000);
+    } else {
+      showAlert("Failed to resend OTP. Please try again.");
+      resendBtn.textContent = "Resend OTP";
+      resendCooldown = false;
+    }
+  }
+</script>
+</body>
+</html>
