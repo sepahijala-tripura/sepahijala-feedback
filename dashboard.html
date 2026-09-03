@@ -410,12 +410,21 @@
     let csvContent = "\uFEFF"; // UTF-8 BOM for Excel
     csvContent += "Date,Office Level,Office Name,Rating,Feedback\r\n";
 
+    const sanitizeCell = (val) => {
+      let str = String(val || "").replace(/"/g, '""');
+      // Prevent spreadsheet formula injection (=, +, -, @, tab, newline)
+      if (/^[=+\-@\t\r]/.test(str)) {
+        str = "'" + str;
+      }
+      return `"${str}"`;
+    };
+
     filtered.forEach(r => {
-      const date = `"${(r.date || "").replace(/"/g, '""')}"`;
-      const level = `"${(r.level || "").replace(/"/g, '""')}"`;
-      const office = `"${(r.office || "").replace(/"/g, '""')}"`;
+      const date = sanitizeCell(r.date);
+      const level = sanitizeCell(r.level);
+      const office = sanitizeCell(r.office);
       const rating = `"${r.rating || ""}"`;
-      const feedback = `"${(r.feedback || "").replace(/"/g, '""')}"`;
+      const feedback = sanitizeCell(r.feedback);
       csvContent += `${date},${level},${office},${rating},${feedback}\r\n`;
     });
 
