@@ -85,11 +85,14 @@
           </div>
         </fieldset>
 
-        <!-- Fieldset 2: Specific Office Chips -->
+        <!-- Fieldset 2: Specific Office Dropdown -->
         <fieldset id="specificOfficeSection" style="display: none;">
           <legend><span data-i18n="step2_title">2. Specific Office</span> <span class="hint" data-i18n="step2_hint"></span></legend>
-          <div class="chip-row" id="officeChipsContainer">
-            <!-- Dynamically populated chips -->
+          <div class="office-select-wrapper">
+            <select id="officeDropdown" class="office-dropdown" onchange="selectSpecificOffice(this.value)">
+              <!-- Dynamically populated options -->
+            </select>
+            <span class="office-select-arrow">▾</span>
           </div>
         </fieldset>
 
@@ -219,7 +222,8 @@
       err_select_rating: "Please select your experience rating from 1 to 5.",
       err_invalid_mobile: "Please enter a valid 10-digit Indian mobile number.",
       err_invalid_email: "Please enter a valid email address.",
-      err_submit_failed: "Failed to submit feedback. Please check connection and try again."
+      err_submit_failed: "Failed to submit feedback. Please check connection and try again.",
+      office_dropdown_placeholder: "— Select Office —"
     },
     bn: {
       dashboard_link: "ড্যাশবোর্ড লগইন ↗",
@@ -271,7 +275,8 @@
       err_select_rating: "অনুগ্রহ করে ১ থেকে ৫ এর মধ্যে রেটিং নির্বাচন করুন।",
       err_invalid_mobile: "অনুগ্রহ করে একটি বৈধ ১০ সংখ্যার মোবাইল নম্বর লিখুন।",
       err_invalid_email: "অনুগ্রহ করে একটি বৈধ ইমেইল ঠিকানা লিখুন।",
-      err_submit_failed: "প্রতিক্রিয়া জমা দেওয়া সম্ভব হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করে পুনরায় চেষ্টা করুন।"
+      err_submit_failed: "প্রতিক্রিয়া জমা দেওয়া সম্ভব হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করে পুনরায় চেষ্টা করুন।",
+      office_dropdown_placeholder: "— দপ্তর বেছে নিন —"
     }
   };
 
@@ -340,23 +345,35 @@
     });
 
     if (selectedOfficeType) {
-      renderOfficeChips(selectedOfficeType);
+      renderOfficeDropdown(selectedOfficeType);
+      // Restore previously selected office in dropdown after re-render
+      if (selectedOffice) {
+        const dropdown = document.getElementById("officeDropdown");
+        if (dropdown) dropdown.value = selectedOffice;
+      }
     }
   }
 
-  function renderOfficeChips(type) {
-    const container = document.getElementById("officeChipsContainer");
-    container.innerHTML = "";
+  function renderOfficeDropdown(type) {
+    const dropdown = document.getElementById("officeDropdown");
+    dropdown.innerHTML = "";
+
+    // Placeholder option
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+    placeholder.textContent = t.office_dropdown_placeholder || "— Select Office —";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    dropdown.appendChild(placeholder);
 
     const offices = OFFICE_DATA[type] || [];
     offices.forEach((off) => {
-      const chip = document.createElement("div");
-      chip.className = "chip" + (selectedOffice === off ? " selected" : "");
-      chip.textContent = (currentLang === "bn") ? (OFFICE_NAMES_BN[off] || off) : off;
-      chip.onclick = function() {
-        selectSpecificOffice(off, chip);
-      };
-      container.appendChild(chip);
+      const option = document.createElement("option");
+      option.value = off;  // canonical English value always sent to backend
+      option.textContent = (currentLang === "bn") ? (OFFICE_NAMES_BN[off] || off) : off;
+      if (selectedOffice === off) option.selected = true;
+      dropdown.appendChild(option);
     });
   }
 
@@ -369,22 +386,22 @@
     if (activeTile) activeTile.classList.add("selected");
 
     const specSection = document.getElementById("specificOfficeSection");
-    renderOfficeChips(type);
+    renderOfficeDropdown(type);
     specSection.style.display = "block";
 
     // Auto-select if only 1 office (e.g. DM Office)
     const offices = OFFICE_DATA[type] || [];
     if (offices.length === 1) {
-      const firstChip = document.getElementById("officeChipsContainer").querySelector(".chip");
-      if (firstChip) selectSpecificOffice(offices[0], firstChip);
+      selectedOffice = offices[0];
+      const dropdown = document.getElementById("officeDropdown");
+      if (dropdown) dropdown.value = offices[0];
+      hideError();
     }
   }
 
-  function selectSpecificOffice(officeName, chipEl) {
+  function selectSpecificOffice(officeName) {
     selectedOffice = officeName;
-    document.querySelectorAll(".chip").forEach(c => c.classList.remove("selected"));
-    if (chipEl) chipEl.classList.add("selected");
-    hideError();
+    if (officeName) hideError();
   }
 
   function setRating(val) {
@@ -482,7 +499,8 @@
 
     document.querySelectorAll(".tile").forEach(t => t.classList.remove("selected"));
     document.getElementById("specificOfficeSection").style.display = "none";
-    document.getElementById("officeChipsContainer").innerHTML = "";
+    const dropdown = document.getElementById("officeDropdown");
+    if (dropdown) dropdown.innerHTML = "";
 
     for (let i = 1; i <= 5; i++) {
       const btn = document.getElementById("rate-" + i);
